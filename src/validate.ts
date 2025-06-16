@@ -50,7 +50,7 @@ const validatePlaceholderFormat = (
   const placeholderRule = SpreadsheetApp.newDataValidation()
     .requireFormulaSatisfied(formula)
     .setAllowInvalid(false)
-    .setHelpText('Placeholder name must be wrapped in "{ and "}.')
+    .setHelpText('Placeholder name must be wrapped in "{" and "}".')
     .build();
 
   sheet.getRange(range).setDataValidation(placeholderRule);
@@ -59,28 +59,29 @@ const validatePlaceholderFormat = (
 const validateConfig = (
   ss: Readonly<GoogleAppsScript.Spreadsheet.Spreadsheet>
 ): void => {
-  const sheets = ss.getSheets();
-
-  if (
-    !sheets
-      .map((sheet: Readonly<GoogleAppsScript.Spreadsheet.Sheet>) =>
-        sheet.getName()
-      )
-      .includes(CONFIG_SHEET_NAME)
-  ) {
-    throw new Error(`No sheet called ${CONFIG_SHEET_NAME} found!`);
-  }
-
-  for (const sheet of sheets) {
-    validateCellEq(
-      sheet,
-      RANGE.header.templateSubject,
-      HEADER_CELL_VALUE.templateSubject
+  const configSheet = ss
+    .getSheets()
+    .find(
+      (sheet: Readonly<GoogleAppsScript.Spreadsheet.Sheet>) =>
+        sheet.getName() === CONFIG_SHEET_NAME
     );
-    validateCellEq(sheet, RANGE.header.subject, HEADER_CELL_VALUE.subject);
-    validateCellNotEmpty(sheet, RANGE.templateSubject);
-    validateCellNotEmpty(sheet, RANGE.subject);
+
+  if (!configSheet) {
+    throw new Error(`No sheet called ${CONFIG_SHEET_NAME} found.`);
   }
+
+  validateCellEq(
+    configSheet,
+    CELL.header.templateSubject.range,
+    CELL.header.templateSubject.value
+  );
+  validateCellEq(
+    configSheet,
+    CELL.header.subject.range,
+    CELL.header.subject.value
+  );
+  validateCellNotEmpty(configSheet, CELL.templateSubject.range);
+  validateCellNotEmpty(configSheet, CELL.subject.range);
 };
 
 const validate = (
@@ -93,9 +94,9 @@ const validate = (
       continue;
     }
 
-    validatePlaceholderFormat(sheet, RANGE.header.placeholder);
-    validateCellEq(sheet, RANGE.header.email, HEADER_CELL_VALUE.email);
-    validateEmail(sheet, RANGE.email);
-    validateCellNotEmpty(sheet, RANGE.placeholder);
+    validateCellEq(sheet, CELL.header.email.range, CELL.header.email.value);
+    validatePlaceholderFormat(sheet, CELL.header.placeholder.range);
+    validateEmail(sheet, CELL.email.range);
+    validateCellNotEmpty(sheet, CELL.placeholder.range);
   }
 };

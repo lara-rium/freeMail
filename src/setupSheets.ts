@@ -11,7 +11,7 @@ const applyFormat = (
   );
 
   sheet
-    .getRange(RANGE.header.all)
+    .getRange(CELL.header.all.range)
     .setFontWeight("bold")
     .setHorizontalAlignment("center");
 
@@ -28,12 +28,14 @@ const insertConfigSheet = (
   configSheet.deleteRows(3, 998);
 
   configSheet
-    .getRange(RANGE.header.templateSubject)
-    .setValue(HEADER_CELL_VALUE.templateSubject);
+    .getRange(CELL.header.templateSubject.range)
+    .setValue(CELL.header.templateSubject.value)
+    .setNote(CELL.header.templateSubject.note);
 
   configSheet
-    .getRange(RANGE.header.subject)
-    .setValue(HEADER_CELL_VALUE.subject);
+    .getRange(CELL.header.subject.range)
+    .setValue(CELL.header.subject.value)
+    .setNote(CELL.header.subject.note);
 
   applyFormat(configSheet);
 };
@@ -43,11 +45,15 @@ const insertSampleSheet = (
 ): void => {
   const sampleSheet = ss.insertSheet("Sample Sheet", 1);
 
-  sampleSheet.getRange(RANGE.header.email).setValue(HEADER_CELL_VALUE.email);
+  sampleSheet
+    .getRange(CELL.header.email.range)
+    .setValue(CELL.header.email.value)
+    .setNote(CELL.header.email.note);
 
   sampleSheet
-    .getRange(RANGE.header.placeholder)
-    .setValue(HEADER_CELL_VALUE.placeholder);
+    .getRange(CELL.header.placeholder.range)
+    .setValue(CELL.header.placeholder.value)
+    .setNote(CELL.header.placeholder.note);
 
   applyFormat(sampleSheet);
 };

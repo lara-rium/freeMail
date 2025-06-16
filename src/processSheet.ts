@@ -8,7 +8,7 @@ interface Placeholder {
 const getEmails = (
   sheet: Readonly<GoogleAppsScript.Spreadsheet.Sheet>
 ): string[] => {
-  const emails = sheet.getRange(RANGE.email).getValues().flat();
+  const emails = sheet.getRange(CELL.email.range).getValues().flat();
 
   if (!emails.every((email) => typeof email === "string")) {
     throw new Error("Failed to get emails.");
@@ -27,7 +27,7 @@ const getPlaceholders = (
   ): value is string[][] =>
     value.every((array) => array.every((item) => typeof item === "string"));
 
-  const placeholders = sheet.getRange(RANGE.placeholder).getValues();
+  const placeholders = sheet.getRange(CELL.placeholder.range).getValues();
 
   if (!is2DArrayString(placeholders)) {
     throw err;
